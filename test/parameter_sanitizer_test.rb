@@ -10,6 +10,15 @@ class BaseSanitizerTest < ActiveSupport::TestCase
     sanitizer = sanitizer(user: { "email" => "jose" })
     assert_equal({ "email" => "jose" }, sanitizer.sanitize(:sign_in))
   end
+
+  test 'converts the sanitizer to a Hash' do
+    sanitizer = sanitizer(user: { "email" => "jose" })
+    hash = sanitizer.to_h
+
+    assert_equal hash[:email], "jose"
+    assert_equal hash["email"], "jose"
+    assert_kind_of ActiveSupport::HashWithIndifferentAccess, hash
+  end
 end
 
 if defined?(ActionController::StrongParameters)
@@ -76,6 +85,15 @@ if defined?(ActionController::StrongParameters)
       params[:user].expects(:permit).with(kind_of(Symbol), kind_of(Symbol), kind_of(Symbol))
 
       sanitizer.sanitize(:sign_in)
+    end
+
+    test 'converts the sanitizer to a Hash' do
+      sanitizer = sanitizer(user: { "email" => "jose" })
+      hash = sanitizer.to_h
+
+      assert_equal hash[:email], "jose"
+      assert_equal hash["email"], "jose"
+      assert_kind_of ActiveSupport::HashWithIndifferentAccess, hash
     end
   end
 end

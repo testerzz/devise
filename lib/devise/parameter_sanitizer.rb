@@ -25,6 +25,20 @@ module Devise
       end
     end
 
+    # Returns a +HashWithIndifferentAccess+ with all the parameters for the
+    # resource_class of this sanitizer, regardless of which parameters were
+    # permitted previously.
+    #
+    # Returns an ActiveSupport::HashWithIndifferentAccess.
+    def to_h
+      hash = default_params
+      if hash.respond_to?(:to_h)
+        hash.to_h.with_indifferent_access
+      else
+        hash.slice(*hash.keys).with_indifferent_access
+      end
+    end
+
     private
 
     def default_for(kind)
